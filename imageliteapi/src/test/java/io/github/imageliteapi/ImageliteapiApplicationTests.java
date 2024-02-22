@@ -1,13 +1,13 @@
-package br.com.api_imagelite;
+package io.github.imageliteapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApiImageliteApplicationTests {
+class ImageliteapiApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
