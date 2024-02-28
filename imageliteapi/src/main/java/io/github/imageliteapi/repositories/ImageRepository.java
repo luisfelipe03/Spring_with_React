@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-
-import static io.github.imageliteapi.repositories.specs.ImageSpecs.*;
 import static org.springframework.data.jpa.domain.Specification.anyOf;
 
 public interface ImageRepository extends JpaRepository<Image, String>, JpaSpecificationExecutor<Image> {
