@@ -6,12 +6,12 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
+@Getter
 public enum ImageExtensions {
     PNG(MediaType.IMAGE_PNG),
     JPEG(MediaType.IMAGE_JPEG),
     GIF(MediaType.IMAGE_GIF);
 
-    @Getter
     private final MediaType mediaType;
 
     ImageExtensions(MediaType mediaType) {
