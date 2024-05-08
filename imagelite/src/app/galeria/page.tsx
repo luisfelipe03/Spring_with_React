@@ -11,19 +11,23 @@ export default function GaleriaPage() {
     const [images, setImages] = useState<Image[]>([]);
     const [query, setQuery] = useState<string>('');
     const [extension, setExtension] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     async function searchImagem() {
-        const result = await useService.buscar();
+        setLoading(true)
+        const result = await useService.buscar(query, extension);
         setImages(result);
-        console.table(result);
+        setLoading(false)
     }
 
     function renderImagesCard(image: Image) {
         return (
             <ImageCard
+                key={image.url}
                 nome={image.name}
                 tamanho={image.size}
                 dataUpload={image.uploadDate}
+                extension={image.extension}
                 src={image.url}
             />
         )
@@ -34,16 +38,23 @@ export default function GaleriaPage() {
     }
 
     return (
-        <Template>
+        <Template loading={loading} >
             
             <section className='flex flex-col items-center justify-center my-5'>
                 <div className='flex space-x-4'>
-                    <input type="text" className='border px-5 py-2 rounded-lg text-gray-900' />
-                    <select name="" id="" className='border px-4 py-2 rounded-lg text-gray-900'>
-                        <option value="jpg">Todos os formatos</option>
+                    <input type="text" 
+                           onChange={event => setQuery(event.target.value)} 
+                           className='border px-5 py-2 rounded-lg text-gray-900' />
+                    <select onChange={e => setExtension(e.target.value)} 
+                            name="" id="" 
+                            className='border px-4 py-2 rounded-lg text-gray-900'>
+                        <option value="">Todos os formatos</option>
+                        <option value='PNG'>PNG</option>
+                        <option value='JPEG'>JPEG</option>
+                        <option value='GIF'>GIF</option>
                     </select>
-                    <button className='bg-blue-500 text-white px-4 py-2 rounded-lg' onClick={searchImagem}>Buscar</button>
-                    <button className='bg-green-500 text-white px-4 py-2 rounded-lg'>Adicionar</button>
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600' onClick={searchImagem}>Buscar</button>
+                    <button className='bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600'>Adicionar</button>
                 </div>
             </section>
 
