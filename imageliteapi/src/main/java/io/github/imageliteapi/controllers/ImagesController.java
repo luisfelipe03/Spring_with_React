@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.apache.commons.text.WordUtils;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -40,6 +42,7 @@ public class ImagesController {
             ) throws IOException {
     log.info("Imagem recebida: nome = {}, size = {}", file.getOriginalFilename(), file.getSize());
 
+    name = WordUtils.capitalize(name);
     Image image = mapper.mapToImage(file, name, tags);
     Image imageSaved = service.save(image);
     URI imageUri = buildImageURL(imageSaved);
@@ -65,6 +68,7 @@ public class ImagesController {
     public ResponseEntity<List<ImageDTO>> search(
             @RequestParam(value = "extension", required = false, defaultValue = "") String extension,
             @RequestParam(value = "query", required = false) String query) {
+        query =  WordUtils.capitalize(query);
         var result = service.search(ImageExtensions.ofName(extension), query);
         var images = result.stream().map(image -> {
                 var url = buildImageURL(image);

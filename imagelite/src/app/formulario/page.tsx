@@ -1,8 +1,12 @@
+import { Template } from '@/components/index'
+
 export default function FormularioPage() {
     return (
-        <main>
-        <h1>Formulário</h1>
-        <p>Em breve...</p>
-        </main>
+        <Template>
+            <div className="text-black">
+                <h1>Formulário</h1>
+                <p>Em breve...</p>
+            </div>
+        </Template>
     )
 }
