@@ -1,28 +1,41 @@
 'use client'
 
-import { InputText, Template, Button, RenderIf } from '@/components/index'
-import Link from 'next/link'
+import { InputText, Template, Button, RenderIf, useNotification, FieldError } from '@/components/index'
+import { useImageService } from '@/resources/image/image.service'
 import { useFormik } from 'formik'
 import { useState } from 'react';
+import { FormProps, formScheme, formValidationScheme } from './formScheme'
+import Link from 'next/link'
 
-interface FormProps {
-    name: string;
-    tags: string;
-    file: any;
-}
-
-const formScheme: FormProps = { name: '', tags: '', file: '' }
 
 export default function FormularioPage() {
 
     const [ImagePreview, setImagePreview] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const service = useImageService();
+    const notification = useNotification();
 
     const formik = useFormik<FormProps>({
         initialValues: formScheme,
-        onSubmit: (values: FormProps) => {
-            console.log(values)
-        }
+        onSubmit: handleSubmit,
+        validationSchema: formValidationScheme
     })
+
+    async function handleSubmit(dados: FormProps) {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('file', dados.file);
+        formData.append('name', dados.name);
+        formData.append('tags', dados.tags);
+
+        await service.salvar(formData);
+
+        formik.resetForm();
+        setImagePreview('');
+        setLoading(false);
+
+        notification.notify('Imagem salva com sucesso', 'success');
+    }
 
     function onFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
         if(event.target.files) { 
@@ -35,21 +48,24 @@ export default function FormularioPage() {
     }
 
     return (
-        <Template>
+        <Template loading={loading}>
             <section className='flex flex-col items-center justify-center my-5'>
                 <h5 className='mt-3 mb-10 text-3xl font-extrabold tracking-tight text-gray-900'>Nova Imagem</h5>
                 <form onSubmit={formik.handleSubmit}>
                     <div className='grid grid-cols-1'>
                         <label className='block text-sm font-medium leading-6 text-gray-700'>Name: *</label>
-                        <InputText id="name" onChange={formik.handleChange} placeholder='Digite o nome da imagem' />
+                        <InputText id="name" onChange={formik.handleChange} placeholder='Digite o nome da imagem' value={formik.values.name} />
+                        <FieldError error={formik.errors.name} />
                     </div>
                     <div className='mt-5 grid grid-cols-1'>
                         <label className='block text-sm font-medium leading-6 text-gray-700'>Tags: *</label>
-                        <InputText id='tags' onChange={formik.handleChange} placeholder='Digite as tags separadas por virgulas' />
+                        <InputText id='tags' onChange={formik.handleChange} placeholder='Digite as tags separadas por virgulas' value={formik.values.tags} />
+                        <FieldError error={formik.errors.tags} />
                     </div>
 
                     <div className='mt-5 grid grid-cols-1'>
                         <label className='block text-sm font-medium leading-6 text-gray-700'>Imagem: *</label>
+                        <FieldError error={formik.errors.file} />
                         <div className='mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
                             <div className='text-center'>
                                 <RenderIf condition={!ImagePreview}>
