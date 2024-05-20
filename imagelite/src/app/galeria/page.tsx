@@ -43,8 +43,7 @@ export default function GaleriaPage() {
             
             <section className='flex flex-col items-center justify-center my-5'>
                 <div className='flex space-x-4'>
-                    <InputText lastInput={query}   
-                               onChange={event => setQuery(event.target.value)}
+                    <InputText onChange={event => setQuery(event.target.value)}
                                placeholder='Nome da Imagem'/>
                     <select onChange={e => setExtension(e.target.value)} 
                             name="" id="" 

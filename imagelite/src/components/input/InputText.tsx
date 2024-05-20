@@ -1,16 +1,20 @@
-import React from 'react';
+import React from "react";
 
 interface InputTextProps {
-    placeholder?: string;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     style?: string;
-    lastInput?: string;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+    placeholder?: string;
+    id?: string;
+    value?: string;
+    type?: string;
 }
 
-export const InputText: React.FC<InputTextProps> = ({style, lastInput = "", ...outrasProps} : InputTextProps) => {
+export const InputText: React.FC<InputTextProps> = ({
+    style, type = "text", ...outrasProps
+} : InputTextProps) => {
     return (
-        <input {...outrasProps}
-               className={`${style} border px-5 py-2 rounded-lg text-gray-900`}
-               value={lastInput} /> 
+        <input type={type}
+                {...outrasProps}
+                className={`${style} border px-3 py-2 rounded-lg text-gray-900`} />
     )
 }
