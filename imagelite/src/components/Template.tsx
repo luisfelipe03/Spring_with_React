@@ -3,20 +3,21 @@ import { ToastContainer } from 'react-toastify'
 interface TemplateProps {
     children: React.ReactNode;
     loading?: boolean;
+    template?: string;
 }
 
-export const Template: React.FC<TemplateProps> = (props: TemplateProps) => {
+export const Template: React.FC<TemplateProps> = ({children, loading, template = '1'}: TemplateProps) => {
     return (
         <>
             <Header />
             <div className="container mx-auto mt-8 px-4 text-black">
-                {props.loading && (
+                {loading && (
                     <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-solid mr-3"></div>
                         <span className="text-gray-600 font-semibold">Carregando...</span>
                     </div>
                 )}
-                {!props.loading && props.children}
+                {!loading && children}
             </div>
             <Footer />
             <ToastContainer position='top-right'
