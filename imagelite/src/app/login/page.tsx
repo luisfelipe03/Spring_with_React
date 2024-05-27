@@ -1,13 +1,20 @@
 'use client';
 
-import {Button, InputText, RenderIf, Template, FieldError} from '@/components';
+import {Button, InputText, RenderIf, Template, FieldError, useNotification} from '@/components';
 import {useState} from 'react';
 import {LoginForm, ValidationScheme, formScheme} from './LoginScheme';
 import {useFormik} from 'formik';
+import { useAuth } from '@/resources';
+import { useRouter } from 'next/navigation';
+import { AccessToken, Credentials } from '@/resources/user/users.resources';
 
 export default function LoginPage() {
     const [loading, setLoading] = useState<boolean>(false);
-    const [newUserState, setNewUserState] = useState<boolean>(true);
+    const [newUserState, setNewUserState] = useState<boolean>(false);
+    
+    const auth = useAuth();
+    const router = useRouter();
+    const notification = useNotification();
 
     const { values, handleChange, handleSubmit, errors } = useFormik<LoginForm>({
         initialValues: formScheme,
@@ -16,9 +23,19 @@ export default function LoginPage() {
     });
 
     async function onSubmit(values: LoginForm) {
-        setLoading(true);
-        console.log(values);
-        setLoading(false);
+        if(!newUserState) {
+            setLoading(true);
+            const credentials: Credentials = {email: values.email, password: values.password}
+            try {
+                const accessToken: AccessToken = await auth.authenticate(credentials);
+                router.push('/galeria');
+            } catch (error: any) {
+                const message = error?.message;
+                notification.notify(message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
     }
     
     return (
@@ -87,7 +104,7 @@ export default function LoginPage() {
                                     <FieldError error={errors.passwordMatch} />
                                 </div>
                             </RenderIf>
-                                <div>
+                                <div className='mt-5'>
                                     <RenderIf condition={newUserState}>
                                         <Button type='submit' 
                                                 style='bg-indigo-500 hover:bg-indigo-700' 

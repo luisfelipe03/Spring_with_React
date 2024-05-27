@@ -1,7 +1,7 @@
 'use client'
 
 import { InputText, Template, Button, RenderIf, useNotification, FieldError } from '@/components/index'
-import { useImageService } from '@/resources/image/image.service'
+import { useImageService } from '@/resources'
 import { useFormik } from 'formik'
 import { useState } from 'react';
 import { FormProps, formScheme, formValidationScheme } from './formScheme'
