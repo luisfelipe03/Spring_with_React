@@ -16,7 +16,7 @@ export default function LoginPage() {
     const router = useRouter();
     const notification = useNotification();
 
-    const { values, handleChange, handleSubmit, errors } = useFormik<LoginForm>({
+    const { values, handleChange, handleSubmit, errors, resetForm } = useFormik<LoginForm>({
         initialValues: formScheme,
         validationSchema: ValidationScheme,
         onSubmit: onSubmit,
@@ -29,6 +29,19 @@ export default function LoginPage() {
             try {
                 const accessToken: AccessToken = await auth.authenticate(credentials);
                 router.push('/galeria');
+            } catch (error: any) {
+                const message = error?.message;
+                notification.notify(message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            setLoading(true);
+            try {
+                await auth.save({name: values.name, email: values.email, password: values.password});
+                notification.notify('Usuário cadastrado com sucesso', 'success');
+                resetForm();
+                setNewUserState(false);
             } catch (error: any) {
                 const message = error?.message;
                 notification.notify(message, 'error');

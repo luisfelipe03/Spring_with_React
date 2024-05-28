@@ -30,7 +30,7 @@ public class UserServiceImpl implements  UserService {
     public User save(User user) {
         var existingUser = getByEmail(user.getEmail());
         if(existingUser != null) {
-            throw new DuplicatedTupleException("User already exists");
+            throw new DuplicatedTupleException("Usuário já cadastrado");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
