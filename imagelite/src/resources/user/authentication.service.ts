@@ -1,4 +1,5 @@
 import {AccessToken, Credentials, User, UserSessionToken} from './users.resources'
+import jwt from 'jwt-decode'
 
 class AuthService {
     baseURL = 'http://localhost:8080/api/users';
@@ -32,6 +33,48 @@ class AuthService {
             const responseError = await response.json();
             throw new Error(responseError.error);
         }
+    }
+
+    initSession(token: AccessToken) {
+        if(token.accessToken) {
+            const decodedToken: any = jwt(token.accessToken);
+
+            const userSessionToken: UserSessionToken = {
+                accessToken: token.accessToken,
+                email: decodedToken.sub,
+                name: decodedToken.name,
+                expiration: decodedToken.exp,    
+            }
+            this.setUserSession(userSessionToken);
+        }
+    }
+
+    setUserSession(userSession: UserSessionToken) {
+        localStorage.setItem(AuthService.AUTH_PARAM, JSON.stringify(userSession));
+    }
+
+    getUserSession() : UserSessionToken | null {
+        const userSession = localStorage.getItem(AuthService.AUTH_PARAM);
+        if(!userSession) {
+            return null;
+        }
+        
+        const token: UserSessionToken = JSON.parse(userSession);
+        return token;
+    }
+
+    isSessionValid(): boolean {
+        const userSession: UserSessionToken | null = this.getUserSession();
+        if (!userSession) {
+            return false;
+        }
+
+        const expiration: number | undefined = userSession.expiration;
+        if (expiration) {
+            const expirationDateInMillis = expiration * 1000;
+            return new Date() < new Date(expirationDateInMillis);
+        }
+        return false;
     }
 }
 

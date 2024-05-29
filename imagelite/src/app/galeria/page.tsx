@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageCard, Template, Button, InputText, useNotification } from '@/components'
+import { ImageCard, Template, Button, InputText, useNotification, AuthenticatedPage } from '@/components'
 import { Image } from '@/resources/image/image.resources'
 import { useImageService } from '@/resources'
 import { useState } from 'react'
@@ -47,30 +47,31 @@ export default function GaleriaPage() {
     }
 
     return (
-        <Template loading={loading} >
-            
-            <section className='flex flex-col items-center justify-center my-5'>
-                <div className='flex space-x-4'>
-                    <InputText onChange={event => setQuery(event.target.value)}
-                               placeholder='Nome da Imagem'/>
-                    <select onChange={e => setExtension(e.target.value)} 
-                            name="" id="" 
-                            className='border px-4 py-2 rounded-lg text-gray-900'>
-                        <option value="">Todos os formatos</option>
-                        <option value='PNG'>PNG</option>
-                        <option value='JPEG'>JPEG</option>
-                        <option value='GIF'>GIF</option>
-                    </select>
-                    <Button style='bg-blue-500 hover:bg-blue-600' label='Buscar' onClick={searchImagem} />
-                    <Link href="/formulario">
-                        <Button style='bg-green-500 hover:bg-green-600' label='Adicionar' />
-                    </Link>
-                </div>
-            </section>
+        <AuthenticatedPage>
+            <Template loading={loading} >
+                <section className='flex flex-col items-center justify-center my-5'>
+                    <div className='flex space-x-4'>
+                        <InputText onChange={event => setQuery(event.target.value)}
+                                placeholder='Nome da Imagem'/>
+                        <select onChange={e => setExtension(e.target.value)} 
+                                name="" id="" 
+                                className='border px-4 py-2 rounded-lg text-gray-900'>
+                            <option value="">Todos os formatos</option>
+                            <option value='PNG'>PNG</option>
+                            <option value='JPEG'>JPEG</option>
+                            <option value='GIF'>GIF</option>
+                        </select>
+                        <Button style='bg-blue-500 hover:bg-blue-600' label='Buscar' onClick={searchImagem} />
+                        <Link href="/formulario">
+                            <Button style='bg-green-500 hover:bg-green-600' label='Adicionar' />
+                        </Link>
+                    </div>
+                </section>
 
-            <section className='grid grid-cols-4 gap-8'>
-                { renderImagesCards() }
-            </section>
-        </Template>
+                <section className='grid grid-cols-4 gap-8'>
+                    { renderImagesCards() }
+                </section>
+            </Template>
+        </AuthenticatedPage>
     )
 }
