@@ -38,7 +38,7 @@ public class JwtService {
 
     private Map<String, Object> generateTokenClaims(User user) {
         return Map.of(
-                "nome", user.getNome()
+                "name", user.getNome()
         );
     }
 
