@@ -31,6 +31,7 @@ export default function LoginPage() {
                 auth.initSession(accessToken);
                 console.log("Sessão valída? " + auth.isSessionValid());
                 router.push('/galeria');
+                window.location.reload();
             } catch (error: any) {
                 const message = error?.message;
                 notification.notify(message, 'error');

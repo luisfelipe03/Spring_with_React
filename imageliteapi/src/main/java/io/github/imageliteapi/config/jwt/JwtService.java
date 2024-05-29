@@ -1,7 +1,8 @@
 package io.github.imageliteapi.config.jwt;
 
+import io.github.imageliteapi.exception.InvalidTokenException;
 import io.github.imageliteapi.models.User;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,21 @@ public class JwtService {
         return Map.of(
                 "nome", user.getNome()
         );
+    }
+
+    public String getEmailFromToken(String token) {
+        try{
+            JwtParser build = Jwts.parser()
+                                  .verifyWith(keyGenerator.getKey())
+                                  .build();
+
+            Jws<Claims> claimsJws = build.parseSignedClaims(token);
+
+            Claims claims = claimsJws.getPayload();
+
+            return claims.getSubject();
+        } catch (JwtException e) {
+            throw new InvalidTokenException(e.getMessage());
+        }
     }
 }
