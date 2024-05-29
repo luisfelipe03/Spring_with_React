@@ -50,17 +50,23 @@ class AuthService {
     }
 
     setUserSession(userSession: UserSessionToken) {
-        localStorage.setItem(AuthService.AUTH_PARAM, JSON.stringify(userSession));
+        try {
+            localStorage.setItem(AuthService.AUTH_PARAM, JSON.stringify(userSession));
+        } catch (error) {}
     }
 
     getUserSession() : UserSessionToken | null {
-        const userSession = localStorage.getItem(AuthService.AUTH_PARAM);
-        if(!userSession) {
+        try {
+            const userSession = localStorage.getItem(AuthService.AUTH_PARAM);
+            if(!userSession) {
+                return null;
+            }
+            
+            const token: UserSessionToken = JSON.parse(userSession);
+            return token;
+        } catch (error) {
             return null;
         }
-        
-        const token: UserSessionToken = JSON.parse(userSession);
-        return token;
     }
 
     isSessionValid(): boolean {
